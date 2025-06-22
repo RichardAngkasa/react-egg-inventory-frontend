@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from './ToastContext';
 
 function Login({ onLogin }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const toast = useToast();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,7 +26,7 @@ function Login({ onLogin }) {
             navigate('/data-entry');
         } catch (error) {
             console.error('Login error:', error);
-            alert(`Login failed: ${error.message}`);
+            toast(`Login failed: ${error.message}`, 'danger');
         }
     };
 

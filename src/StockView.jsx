@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { useToast } from './ToastContext';
 
 function StockView() {
     // Notebook for egg racks, filter choice, and sort order
@@ -8,6 +9,7 @@ function StockView() {
     const [filterType, setFilterType] = useState('All'); // Start with all eggs
     const [sortOrder, setSortOrder] = useState('Terbaru'); // Start with newest
     const [displayRacks, setDisplayRacks] = useState([]); // Racks to show
+    const toast = useToast();
 
     // Fetch racks when the page loads
     useEffect(() => {
@@ -21,7 +23,7 @@ function StockView() {
         .then(data => setRacks(Array.isArray(data) ? data : []))
         .catch(err => {
             console.error('Fetch error:', err);
-            alert('Tidak bisa mengambil data telur.');
+            toast('Tidak bisa mengambil data telur.', 'danger');
         });
     }, []);
 
