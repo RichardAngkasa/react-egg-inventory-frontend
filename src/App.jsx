@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './Navbar';
@@ -13,6 +13,13 @@ function ProtectedRoute({ children }) {
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token') || '');
+    const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => setViewportWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleLogin = (newToken) => {
         setToken(newToken);
@@ -24,10 +31,17 @@ function App() {
         localStorage.removeItem('token');
     };
 
+    const isDesktop = viewportWidth >= 992;
+
     return (
         <Router>
-            <div className="container-fluid">
-                <Navbar token={token} onLogout={handleLogout} />
+            <Navbar token={token} onLogout={handleLogout} />
+            <div
+                style={{
+                    marginLeft: isDesktop && token ? '220px' : 0,
+                    paddingBottom: !isDesktop && token ? '70px' : 0,
+                }}
+            >
                 <Routes>
                     <Route path="/login" element={<Login onLogin={handleLogin} />} />
                     <Route
